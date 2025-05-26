@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <title>Хархавкина М.А.</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        td, th {
+            border: 1px solid #333;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Матрица значений функции Кантора</h1>
+    <div>
+        <label for="rows">Строки:</label>
+        <input type="number" id="rows" value="5" min="1" />
+        <label for="cols">Столбцы:</label>
+        <input type="number" id="cols" value="4" min="1" />
+        <button id="generate">Готово</button>
+    </div>
+    <div id="matrix-container"></div>
+
+    <script>
+        function cantorBijection(i, j) {
+            return Math.floor((i + j) * (i + j + 1) / 2) + i;
+        }
+
+        function createMatrix(N, M) {
+            const matrix = [];
+            for (let i = 0; i < N; i++) {
+                const row = [];
+                for (let j = 0; j < M; j++) {
+                    row.push(cantorBijection(i, j));
+                }
+                matrix.push(row);
+            }
+            return matrix;
+        }
+
+        function renderMatrix(matrix) {
+            const container = document.getElementById('matrix-container');
+            container.innerHTML = ''; 
+
+            const table = document.createElement('table');
+            const tbody = document.createElement('tbody');
+
+            const headerRow = document.createElement('tr');
+            headerRow.appendChild(document.createElement('th'));
+            for (let j = 0; j < matrix[0].length; j++) {
+                const th = document.createElement('th');
+                th.textContent = `j=${j}`;
+                headerRow.appendChild(th);
+            }
+            tbody.appendChild(headerRow);
+
+            for (let i = 0; i < matrix.length; i++) {
+                const tr = document.createElement('tr');
+                const th = document.createElement('th');
+                th.textContent = `i=${i}`;
+                tr.appendChild(th);
+
+                for (let j = 0; j < matrix[i].length; j++) {
+                    const td = document.createElement('td');
+                    td.textContent = matrix[i][j];
+                    tr.appendChild(td);
+                }
+                tbody.appendChild(tr);
+            }
+
+            table.appendChild(tbody);
+            container.appendChild(table);
+        }
+        document.getElementById('generate').addEventListener('click', () => {
+            const N = parseInt(document.getElementById('rows').value, 10);
+            const M = parseInt(document.getElementById('cols').value, 10);
+
+            if (N > 0 && M > 0) {
+                const matrix = createMatrix(N, M);
+                renderMatrix(matrix);
+            } else {
+                alert('Введите положительные значения для N и M');
+            }
+        });
+
+        window.onload = () => {
+            document.getElementById('generate').click();
+        };
+    </script>
+</body>
+</html>
